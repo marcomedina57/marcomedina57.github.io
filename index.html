@@ -20,7 +20,7 @@
             <div hidden id="inicioSesion">
                 <p hidden id = "errorSesion" class = "alert-danger alert">Contraseña Incorrecta, intente de nuevo</p>
                 <h1>Ingrese su NIP</h1>
-                <input maxlength = "5" type = "password" id = "password"/>
+                <input onkeypress = "return event.charCode >= 48 && event.charCode <= 57 ||  event.charCode == 46" maxlength = "5" type = "password" id = "password"/>
                 <button class = "btn btn-success" id = "sesion" class = "btn btn-success">Aceptar</button>
             </div>
 
@@ -47,14 +47,14 @@
                 <div class = "home" hidden id = "retiroMonto">
                     <h4>Saldo actual: <span id = "amountRetiro"></span></h4>
                     <p hidden class = "alert alert-success" id = "mensajeRetiro"></p>
-                    <input onkeypress = "return event.charCode >= 48 && event.charCode <= 57 ||  event.charCode == 46" id = "txtRetiro" type = "text" placeholder = "Saldo a retirar"/>
+                    <input maxlength="5" onkeypress = "return event.charCode >= 48 && event.charCode <= 57 ||  event.charCode == 46" id = "txtRetiro" type = "text" placeholder = "Saldo a retirar"/>
                     <button class = "btn btn-success"onclick = "regresar()">Regresar</button>
                     <button class = "btn btn-success" onclick = "retirar()">Aceptar</button>
                 </div>
                 <div class = "home" hidden id = "ingresarMonto">
                     <p hidden class = "alert alert-success" id = "mensajeSuma"></p>
                     <h4>Saldo actual: <span id = "amountSet"></span></h4>
-                    <input  onkeypress = "return event.charCode >= 48 && event.charCode <= 57 ||  event.charCode == 46" id = "txtIngreso" type = "text" placeholder = "Saldo a ingresar"/>
+                    <input maxlength="5" onkeypress = "return event.charCode >= 48 && event.charCode <= 57 ||  event.charCode == 46" id = "txtIngreso" type = "text" placeholder = "Saldo a ingresar"/>
                     <button class = "btn btn-success" onclick = "regresar()">Regresar</button>
                     <button class = "btn btn-success" onclick = "ingresar()">Aceptar</button>
                 </div>
