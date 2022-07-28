@@ -19,3 +19,7 @@ ul {
 li :hover {
     background: black !important;
 }
+
+.pointer {
+    cursor: pointer;
+}

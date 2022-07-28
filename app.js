@@ -105,7 +105,7 @@
                 divPrincipal.removeAttribute('hidden');
                 const divUsuarios = document.createElement('div');
                 for(let i = 0; i < cuentas.length; i++){
-                    divUsuarios.innerHTML += `<h3 class = 'm-5 text-center' onclick='inicioSesion(${i})'>${cuentas[i].nombre}</h3>`
+                    divUsuarios.innerHTML += `<h3 class = 'pointer m-5 text-center' onclick='inicioSesion(${i})'>${cuentas[i].nombre}</h3>`
                     
                 }
                 divPrincipal.appendChild(divUsuarios);
