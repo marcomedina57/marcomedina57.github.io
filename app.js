@@ -51,7 +51,7 @@
     let cuentas = [
         {nombre: "Ulises Lopez", saldo: 500, password: 12345},
         {nombre: "Carlos Silva", saldo: 900, password: 54321},
-        {nombre: "Roberto Martinez", saldo: 300, password: 11133},
+        {nombre: "Daniel Valles", saldo: 300, password: 11133},
     ]
 
     // se valida si esta loggeado o no para redirigir a login o home
