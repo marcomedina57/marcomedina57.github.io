@@ -1,27 +1,26 @@
-
-const arregloPokemones = JSON.parse(poke_file);
+// Acceso al DOM
 const containerPokemons = document.getElementById('containerPokemons');
 const containerGrid = document.getElementById('grid');
 const divMensaje = document.getElementById('mensaje');
+
+// Parseo de JSON a Objeto
+const arregloPokemones = JSON.parse(poke_file);
+
+
 let arregloPokemonesFinal = {};
 let arregloFinal = [];
 
 
+// Se crea objeto sin pokemones repetidos y se regresan solo las propiedades especificadas
 const filtrarArray = (obj) => {
     if (!arregloPokemonesFinal[obj["name"]]){
         arregloPokemonesFinal[obj["name"]] = obj;
     }
 
-     arregloFinal = Object.keys(arregloPokemonesFinal).map( (key)  => { 
-        return {
-        name: arregloPokemonesFinal[key]["name"],
-        img: arregloPokemonesFinal[key]["ThumbnailImage"],
-        type: arregloPokemonesFinal[key]["type"],
-        height: arregloPokemonesFinal[key]["height"]
-        }
-     });
+   
 
 }
+
 
 const buscarPokemon = () => {  
 
@@ -93,13 +92,7 @@ const mostrarPokemon = (pokemon) => {
 const mostrarPokemones = () => {
     
 
-    const pokemones = arregloPokemones.result;
-    for(let pokemon of pokemones)
-    {
-       filtrarArray(pokemon);
-      
-    }
-    
+   
     for(let pk of arregloFinal)
     {
         const pokemon = new Pokemon(pk["name"], pk["img"], pk["type"], pk["height"])
@@ -122,6 +115,28 @@ const mostrarPokemones = () => {
 
 }
 
+const Init = () => {
+    const pokemones = arregloPokemones.result;
+    for(let pokemon of pokemones)
+    {
+       filtrarArray(pokemon);
+      
+    }
+
+    // Se crea arreglo final con las propiedades deseadas
+    arregloFinal = Object.keys(arregloPokemonesFinal).map( (key)  => { 
+        return {
+        name: arregloPokemonesFinal[key]["name"],
+        img: arregloPokemonesFinal[key]["ThumbnailImage"],
+        type: arregloPokemonesFinal[key]["type"],
+        height: arregloPokemonesFinal[key]["height"]
+        }
+     });
+
+    dibujarPokemones(arregloFinal);
+    
+}
+
 
 // Clases 
 
@@ -137,5 +152,7 @@ class Pokemon {
 
 }
 
+
 // Init
-mostrarPokemones();
+Init();
+
