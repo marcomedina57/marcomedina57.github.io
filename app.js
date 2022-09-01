@@ -1,232 +1,141 @@
 
-
-// Secciones 
-    const divContenido = document.getElementById('contenido');
-    const divPrincipal = document.getElementById('principal');
-    const divInicioSesion = document.getElementById('inicioSesion');
-    const divHomeOpciones = document.getElementById('home');
-
-    // Acciones HOME
-    const consultaHome = document.getElementById('consulta');
-    const retiroHome = document.getElementById('retiroMonto');
-    const ingresoHome = document.getElementById('ingresarMonto');
-    const nombreHome = document.getElementById('nombreHome');
+const arregloPokemones = JSON.parse(poke_file);
+const containerPokemons = document.getElementById('containerPokemons');
+const containerGrid = document.getElementById('grid');
+const divMensaje = document.getElementById('mensaje');
+let arregloPokemonesFinal = {};
+let arregloFinal = [];
 
 
-    //Consulta
-    const consultaSaldoTotal = document.getElementById('consultaSaldoTotal');
-
-    // Retiro
-
-    const txtRetiro = document.getElementById('txtRetiro');
-    const amountRetiro = document.getElementById('amountRetiro');
-    const mensajeRetiro = document.getElementById('mensajeRetiro');
-
-    // Ingreso
-
-    const txtIngreso = document.getElementById('txtIngreso');
-    const amountSet = document.getElementById('amountSet');
-    const mensajeSuma = document.getElementById('mensajeSuma');
-
-    // sesion
-
-    const errorSesion = document.getElementById('errorSesion');
-    const btnSesion = document.getElementById('cerrarSesion');
-    const inputPassword = document.getElementById('password');
-    const btnIniciar = document.getElementById('sesion');
-
-
-    // Errores
-    const errorCantidades = document.getElementById('errorCantidades');
-
-
-    // Obj con usuario iniciado sesion
-    const cuentaLoggeada = {
-        nombre: '',
-        saldo: '',
-
+const filtrarArray = (obj) => {
+    if (!arregloPokemonesFinal[obj["name"]]){
+        arregloPokemonesFinal[obj["name"]] = obj;
     }
 
-    // Cuentas disponibles para iniciar sesion
-    let cuentas = [
-        {nombre: "Ulises Lopez", saldo: 500, password: 12345},
-        {nombre: "Carlos Silva", saldo: 900, password: 54321},
-        {nombre: "Daniel Valles", saldo: 300, password: 11133},
-    ]
-
-    // se valida si esta loggeado o no para redirigir a login o home
-    const validarAcceso = () => {
-        if (localStorage.getItem('usuario')){
-            const usuarioInfo = JSON.parse(localStorage.getItem('usuario'));
-            cuentaLoggeada.nombre = usuarioInfo.nombre;
-            cuentaLoggeada.saldo = Number(usuarioInfo.saldo);
-           return cargarPantalla('home')
+     arregloFinal = Object.keys(arregloPokemonesFinal).map( (key)  => { 
+        return {
+        name: arregloPokemonesFinal[key]["name"],
+        img: arregloPokemonesFinal[key]["ThumbnailImage"],
+        type: arregloPokemonesFinal[key]["type"],
+        height: arregloPokemonesFinal[key]["height"]
         }
-        
-        cargarPantalla('principal');
+     });
+
+}
+
+const buscarPokemon = () => {  
+
+    containerPokemons.innerHTML = "";
+    const textoBuscar = document.getElementById('buscar').value 
+
+    if (textoBuscar.trim().length === 0) {
+        return dibujarPokemones(arregloFinal);
     }
+    const pokemonesBuscados = []
 
-    // FUNCIONES LOGIN 
-    const inicioSesion = (cuenta) => {
-        const {password, saldo, nombre} = cuentas[cuenta];
-
-
-        cargarPantalla('inicioSesion');
-        btnIniciar.addEventListener('click', () => {
-            if(inputPassword.value == password){
-                cuentaLoggeada.nombre = nombre;
-                cuentaLoggeada.saldo = Number(saldo);
-                cargarPantalla('home');
-                btnSesion.removeAttribute('hidden');
-                
-                localStorage.setItem('usuario', JSON.stringify(cuentaLoggeada));
-                } else {
-                    errorSesion.removeAttribute('hidden');
-
-                    setTimeout(() => {
-                        errorSesion.hidden = true;
-                    }, 3000);
-                }
-            }) 
-     }
-
-     const cerrarSesion = () => {
-
-        localStorage.removeItem('usuario');
-        window.location.reload();
-
-    }
-
-    // Se carga pantalla con las cuentas disponibles
-    const cargarPantalla = (tipoPantalla) => {
-        switch(tipoPantalla){
-
-            case 'principal':
-                divPrincipal.removeAttribute('hidden');
-                const divUsuarios = document.createElement('div');
-                for(let i = 0; i < cuentas.length; i++){
-                    divUsuarios.innerHTML += `<h3 class = 'pointer m-5 text-center' onclick='inicioSesion(${i})'>${cuentas[i].nombre}</h3>`
-                    
-                }
-                divPrincipal.appendChild(divUsuarios);
-                btnSesion.hidden = true;
-
-            break;
-
-            case 'inicioSesion':
-                divPrincipal.hidden = true;
-                divInicioSesion.removeAttribute('hidden');
-
-            break;
-
-            case 'home':
-                divPrincipal.hidden = true;
-                divInicioSesion.hidden = true;
-                divHomeOpciones.removeAttribute('hidden');
-                nombreHome.innerText = cuentaLoggeada.nombre;
-                btnSesion.removeAttribute('hidden');
-            break;
-
+    for(let pokemon of arregloFinal){
+        if (pokemon.name.trim().toUpperCase().includes(textoBuscar.trim().toUpperCase())){
+            pokemonesBuscados.push(pokemon);
         }
     }
 
-    const regresar = () => {
-        const homeOpc = document.getElementsByClassName('home');
-        for(const opc of homeOpc){
-            opc.hidden = true;
+    if (pokemonesBuscados.length === 0){
+        return divMensaje.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+        No se encontraron resultados para <b>${textoBuscar}</b>
+        </div>
+        `
+    }
+    dibujarPokemones(pokemonesBuscados)
+   
+}
+
+const dibujarPokemones = ( arreglo) => {
+    divMensaje.innerHTML = '';
+    for(let poke of arreglo)
+    {
+        const div = document.createElement('div');
+
+        const pokemon = new Pokemon(poke.name, poke.img, poke.type, poke.height)
+       div.classList.add('col');
+       div.addEventListener('click', () => {
+        mostrarPokemon(pokemon);
+       })
+       div.innerHTML = `
+       <div class="card"">
+               <img src="${pokemon.img}" class="card-img-top" alt="...">
+               <div class="card-body">
+                 <h5 class="text-center card-title">${pokemon.nombre}</h5>
+               </div>
+             </div>
+       `
+       containerPokemons.appendChild(div);
+       
+    }
+}
+
+const mostrarPokemon = (pokemon) => {
+        let tipo = "";
+        for(let i = 0; i < pokemon.tipo.length; i++){
+        tipo += `${pokemon.tipo[i]} `;
         }
 
-        divHomeOpciones.removeAttribute('hidden');
-    }
+        Swal.fire({
+            title: pokemon.nombre,
+            text: `Tipo: ${tipo}, Peso: ${pokemon.peso}`,
+            imageUrl: pokemon.img,
+            imageWidth: 400,
+            imageHeight: 200,
+            imageAlt: 'Custom image',
+        })
+}
 
-
-    // Acciones usuario logeado
-
-    const consultarSaldo = () => {
-        ocultarOpciones();
-        consultaHome.removeAttribute('hidden');
-        consultaSaldoTotal.innerText = cuentaLoggeada.saldo;
-
-
-    }
-
-    const retirarSaldo = () => {
-        ocultarOpciones();
-        retiroHome.removeAttribute('hidden');
-        amountRetiro.textContent = cuentaLoggeada.saldo;
-        console.log(cuentaLoggeada.saldo);
-        console.log(amountRetiro);
-        
-    }
-
-    const ingresarMonto = () => {
-        ocultarOpciones();
-        amountSet.textContent = cuentaLoggeada.saldo;
-        ingresoHome.removeAttribute('hidden');
-    }
-
-    const ocultarOpciones = () => {
-        divHomeOpciones.hidden = true;
-    }
-
-  
+const mostrarPokemones = () => {
     
 
-    const retirar = () => {
-
-        if (txtRetiro.value.trim().length === 0) return;
-
-        const txtCantidadRetirar = Number(txtRetiro.value);
-        if (cuentaLoggeada.saldo - txtCantidadRetirar > 990 || cuentaLoggeada.saldo - txtCantidadRetirar < 10){
-            errorCantidades.removeAttribute('hidden');
-            txtRetiro.value = "";
-            setTimeout(() => {
-                errorCantidades.hidden = true;
-            }, 3000)
-        } else {
-            cuentaLoggeada.saldo -= txtCantidadRetirar;
-            localStorage.setItem('usuario', JSON.stringify(cuentaLoggeada));
-            txtRetiro.value = "";
-            mensajeRetiro.innerText = `Su nuevo saldo es: ${cuentaLoggeada.saldo}`;
-            mensajeRetiro.removeAttribute('hidden');
-            amountRetiro.innerText = cuentaLoggeada.saldo;
-
-
-            setTimeout(() => {
-                mensajeRetiro.innerText = '';
-                mensajeRetiro.hidden = true;
-            },3000)
-        }
+    const pokemones = arregloPokemones.result;
+    for(let pokemon of pokemones)
+    {
+       filtrarArray(pokemon);
+      
+    }
+    
+    for(let pk of arregloFinal)
+    {
+        const pokemon = new Pokemon(pk["name"], pk["img"], pk["type"], pk["height"])
+       const div = document.createElement('div');
+       div.classList.add('col');
+       div.addEventListener('click', () => {
+        mostrarPokemon(pokemon);
+       })
+       div.innerHTML = `
+       <div class="card"">
+               <img src="${pokemon.img}" class="card-img-top" alt="...">
+               <div class="card-body">
+                 <h5 class="text-center card-title">${pokemon.nombre}</h5>
+               </div>
+        </div>
+       `
+       containerPokemons.appendChild(div);
+       
     }
 
+}
 
-    const ingresar = () => {
-        if (txtIngreso.value.trim().length === 0) return;
 
-        const txtCantidadSumar = Number(txtIngreso.value);
-        if (cuentaLoggeada.saldo + txtCantidadSumar > 990 || cuentaLoggeada.saldo + txtCantidadSumar < 10){
-            errorCantidades.removeAttribute('hidden');
-            txtIngreso.value = "";
-            setTimeout(() => {
-                errorCantidades.hidden = true;
-            }, 3000)
-        } else {
-            cuentaLoggeada.saldo += txtCantidadSumar;
-            localStorage.setItem('usuario', JSON.stringify(cuentaLoggeada));
-            txtIngreso.value = "";
-            mensajeSuma.innerText = `Su nuevo saldo es: ${cuentaLoggeada.saldo}`;
-            mensajeSuma.removeAttribute('hidden');
-            amountSet.innerText = cuentaLoggeada.saldo;
+// Clases 
 
-            setTimeout(() => {
-                mensajeSuma.innerText = '';
-                mensajeSuma.hidden = true;
-            },3000)
-        }
+class Pokemon {
 
+    constructor(nombre, img, tipo, peso, movimiento){
+        this.nombre = nombre;
+        this.img = img;
+        this.tipo = tipo;
+        this.peso = peso;
+        this.movimiento = movimiento;
     }
 
-  
+}
 
-    validarAcceso();
-
+// Init
+mostrarPokemones();

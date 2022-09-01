@@ -1,2 +1,0 @@
-# proyecto-cajero
-proyecto-cajero
