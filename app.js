@@ -89,31 +89,7 @@ const mostrarPokemon = (pokemon) => {
         })
 }
 
-const mostrarPokemones = () => {
-    
 
-   
-    for(let pk of arregloFinal)
-    {
-        const pokemon = new Pokemon(pk["name"], pk["img"], pk["type"], pk["height"])
-       const div = document.createElement('div');
-       div.classList.add('col');
-       div.addEventListener('click', () => {
-        mostrarPokemon(pokemon);
-       })
-       div.innerHTML = `
-       <div class="card"">
-               <img src="${pokemon.img}" class="card-img-top" alt="...">
-               <div class="card-body">
-                 <h5 class="text-center card-title">${pokemon.nombre}</h5>
-               </div>
-        </div>
-       `
-       containerPokemons.appendChild(div);
-       
-    }
-
-}
 
 const Init = () => {
     const pokemones = arregloPokemones.result;
